@@ -9,6 +9,8 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+const RPC = require('./service/rpcWrapper');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -36,5 +38,14 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+const clients = {
+  user1: '8545',
+  user2: '8546',
+};
+
+const rpc = RPC(clients);
+
+console.log(rpc.call(client.user1, 'eth_getBalance', ['']));
 
 module.exports = app;
