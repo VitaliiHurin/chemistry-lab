@@ -1,13 +1,25 @@
 const express = require('express');
-
 const router = express.Router();
+
+const { users, compounds, elements } = require('../models');
+
+const config = require('../config/config');
+const RPC = require('../services/rpcWrapper');
+const rpc = new RPC(config.clients);
 
 router.get('/', (req, res) => { res.status(200).json({ message: 'OK' }); });
 
-router.get('/get-balance', (req, res) => {
-  const { userId } = req.query;
-  // get user balance
-  res.status(200).json({ balance: 12 });
+router.post('/login', async (req, res) => {
+  const { login, password } = req.body;
+  const user = await users.findOne({ login, password});
+
+  res.status(200).json({ userId: user.id });
+})
+
+router.get('/get-balance', async (req, res) => {
+  const { userId } = req.query - 1;
+  const balance = await rpc.call(config.clients[userId], 'eth_getBalance', [config.clients[userId].coinbase, 'latest']);
+  res.status(200).json({ balance: parseInt(balance.result, 16) });
 })
 
 router.post('/buy-pack', (req, res) => {
@@ -16,28 +28,31 @@ router.post('/buy-pack', (req, res) => {
   res.status(200).json({ transactionStatus: 'created' });
 })
 
-router.get('get-collection', (req, res) => {
+router.get('/get-collection', async (req, res) => {
   const { userId } = req.query;
-  // get collection from DB
-  res.status(200).json({
-    elements: [
-      {
-        name: 'Sodium',
-        symbol: 'Na',
-        atomicMass: '23',
-        description: `Sodium is a chemical element with symbol Na (from Latin natrium) and atomic number 11.
-          It is a soft, silvery-white, highly reactive metal.`
-      }
-    ],
-    compounds: [
-      {
-        name: 'Sodium chloride',
-        description: `Sodium Chloride is a metal halide composed of sodium and chloride with sodium and 
-        chloride replacement capabilities. When depleted in the body, sodium must be replaced in order to 
-        maintain intracellular osmolarity, nerve conduction, muscle contraction and normal renal function.`
-      }
-    ]
-  })
+
+  try {
+    const user = await users.findOne({
+      where: {
+        id: userId
+      },
+      include: [{
+        model: elements,
+        as: 'element'
+      },{
+        model: compounds,
+        as: 'compound'
+      }]
+    });
+    res.status(200).json({
+      elements: user.dataValues.element,
+      compounds: user.dataValues.compound,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err,
+    })
+  }
 })
 
 module.exports = router;

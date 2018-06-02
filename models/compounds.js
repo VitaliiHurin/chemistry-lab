@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       elementsObject: DataTypes.JSONB,
-      description: DataTypes.TEXT
+      description: DataTypes.TEXT,
+      createdAt: DataTypes.DATE
     },
     {
       timestamps: false

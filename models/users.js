@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
       login: DataTypes.STRING,
       password: DataTypes.STRING,
       port: DataTypes.INTEGER,
-      experience: DataTypes.DATE
+      experience: DataTypes.DATE,
+      createdAt: DataTypes.DATE
     },
     {
       timestamps: false
@@ -13,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   users.associate = function (models) {
-    users.belongsToMany(models.users, { through: 'userElements', as: 'element' });
-    users.belongsToMany(models.users, { through: 'userCompounds', as: 'compound' });
+    users.belongsToMany(models.elements, { through: 'userElements', as: 'element' });
+    users.belongsToMany(models.compounds, { through: 'userCompounds', as: 'compound' });
   };
 
   return users;

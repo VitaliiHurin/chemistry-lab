@@ -4,8 +4,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       symbol: DataTypes.STRING,
-      atomicMass: DataTypes.INTEGER,
-      description: DataTypes.TEXT
+      number: DataTypes.INTEGER,
+      description: DataTypes.TEXT,
+      createdAt: DataTypes.DATE
     },
     {
       timestamps: false

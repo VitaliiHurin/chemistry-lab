@@ -5,5 +5,15 @@
     "database": "chemistryLab",
     "host": "127.0.0.1",
     "dialect": "postgres"
-  }
+  },
+  "clients": [
+    {
+      "port": "8545",
+      "coinbase": "0xbe784298bdb59d153a938cead2a82749d5439bea"
+    },
+    {
+      "port": "8546",
+      "coinbase": "0x4971d83b599354784b417051e5a4943fadb20f95"
+    }
+  ]
 }
