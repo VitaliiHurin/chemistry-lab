@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "Tamriel",
+    "password": null,
+    "database": "chemistryLab",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
