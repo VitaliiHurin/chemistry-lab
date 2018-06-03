@@ -12,10 +12,15 @@ const rpc = new RPC(config.clients);
 router.get('/', (req, res) => { res.status(200).json({ message: 'OK' }); });
 
 router.post('/login', async (req, res) => {
-  const { login, password } = req.body;
-  const user = await users.findOne({ where: { login, password } });
+  try {
+    const { login, password } = req.body;
+    const user = await users.findOne({ where: { login, password } });
 
-  res.status(200).json({ userId: user.id });
+     res.status(200).json({ userId: user.id });
+  } catch(err) {
+    console.error(err);
+    res.status(500).json({ message: err.toString() });
+  }
 })
 
 router.get('/get-balance', async (req, res) => {
@@ -24,7 +29,8 @@ router.get('/get-balance', async (req, res) => {
     const balance = await rpc.call(config.clients[userId], 'eth_getBalance', [config.clients[userId].coinbase, 'latest']);
     res.status(200).json({ balance: parseInt(balance.result, 16) });
   } catch(err) {
-    res.status(500).json({ message: err });
+    console.error(err);
+    res.status(500).json({ message: err.toString() });
   }
 })
 
@@ -60,7 +66,8 @@ router.post('/buy-pack', async (req, res) => {
     checkTx(txHash);
     
   } catch(err) {
-    res.status(500).json({ message: err });
+    console.error(err);
+    res.status(500).json({ message: err.toString() });
   }
 })
 
@@ -85,8 +92,31 @@ router.get('/get-collection', async (req, res) => {
       compounds: user.dataValues.compound,
     });
   } catch (err) {
+    console.error(err);
     res.status(500).json({
-      message: err,
+      message: err.toString(),
+    })
+  }
+})
+
+router.get('/leaderboard', async (req, res) => {
+  // const { userId } = req.query;
+
+  try {
+    const userArray = await users.findAll({
+      include: [{
+        model: compounds,
+        as: 'compound'
+      }]
+    });
+    //console.log('users', JSON.stringify(user, null, 2));
+    const response = userArray.map((u) => ({name: u.dataValues.login, compoundCount: u.dataValues.compound.length}));
+    response.sort((a,b) => b.compoundCount - a.compoundCount);
+    res.status(200).json(response);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: err.toString(),
     })
   }
 })
@@ -147,7 +177,7 @@ router.post('/create-compound', async (req, res) => {
         await deleteElements(userId, Object.keys(compound.dataValues.elementsObject));
         console.log('After');
       } catch (err) {
-        res.status(404).json({ message: err });
+        res.status(404).json({ message: err.toString() });
       }
       
       const compoundId = compound.dataValues.id;
@@ -162,12 +192,13 @@ router.post('/create-compound', async (req, res) => {
       console.log('sum', sum);
       user.update({ experience: +user.dataValues.experience + sum * 10 });
 
-      res.status(201).json({ message: 'OK' });
+      res.status(201).json({ message: 'OK', compoundName: compound.dataValues.name  });
     };
     checkTx(txHash);
     
   } catch(err) {
-    res.status(500).json({ message: err });
+    console.error(err);
+    res.status(500).json({ message: err.toString() });
   }
 })
 
