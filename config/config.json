@@ -7,13 +7,34 @@
     "dialect": "postgres"
   },
   "clients": [
+    {},
     {
       "port": "8545",
-      "coinbase": "0xbe784298bdb59d153a938cead2a82749d5439bea"
+      "coinbase": "0xca805e0768a9717c8b75c5d2c2e785c77f64beb5"
     },
     {
       "port": "8546",
-      "coinbase": "0x4971d83b599354784b417051e5a4943fadb20f95"
+      "coinbase": "0xf3d8c6bec6e087b07ed63250db6c8329e0ecd475"
     }
+  ],
+  "admin": {
+    "coinbase": "0xf3d8c6bec6e087b07ed63250db6c8329e0ecd475"
+  },
+  "packs": [
+    ["H", "H", "H"],
+    ["S", "H", "H"],
+    ["H", "H", "H"],
+    ["H", "H", "H"],
+    ["H", "H", "Cl"],
+    ["H", "O", "H"],
+    ["H", "H", "H"],
+    ["H", "H", "H"],
+    ["Na", "O", "Cl"],
+    ["O", "Na", "H"],
+    ["H", "H", "O"],
+    ["S", "O", "H"],
+    ["Na", "H", "O"],
+    ["O", "F", "H"],
+    ["H", "H", "H"]
   ]
 }

@@ -6,12 +6,14 @@ class RPC {
   constructor(conf) {
     this.clients = {};
     conf.forEach(({port}) => {
-      this.clients[port] = new Client({
-        port: port.toString(),
-        host: 'localhost',
-        path: '/',
-        strict: true
-      });
+      if (port) {
+        this.clients[port] = new Client({
+          port: port.toString(),
+          host: 'localhost',
+          path: '/',
+          strict: true
+        });
+      }
     });
   }
   
